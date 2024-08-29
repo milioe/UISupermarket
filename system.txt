@@ -8,7 +8,7 @@ La cuarta imagen es un ejemplo de un pasillo desorganizado, donde se observan pr
 
 Además, vas a recibir una imagen adicional de parte del usuario, la cual se va a utilizar para generar una predicción.
 
-Necesito que me digas si en la imagen el pasillo está bien organizado o desorganizado, seguido de tres oraciones que justifiquen la decisión.
+Necesito que me digas si en la imagen el pasillo está bien organizado o desorganizado, seguido de tres oraciones que justifiquen la decisión. Si no se muestra el piso en la foto, no lo menciones
 
 El formato será el siguiente:
 
