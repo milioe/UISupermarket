@@ -59,7 +59,7 @@ async def call_azure_openai(client, messages):
         response = await client.chat.completions.create(
             model=azure_oai_deployment,
             messages=messages,
-            temperature=0.7,
+            temperature=0,
             max_tokens=800
         )
         return response.choices[0].message.content.strip()
