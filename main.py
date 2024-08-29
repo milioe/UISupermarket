@@ -67,7 +67,7 @@ async def call_azure_openai(client, messages):
         raise RuntimeError(f"Error al llamar al modelo de Azure OpenAI: {str(e)}")
 
 # Interfaz de Streamlit
-st.title("Detección de instalación de ONT con AI")
+st.title("Detección de limpieza con GPT")
 
 # Sidebar para drag and drop y selección de imágenes pre-cargadas
 with st.sidebar:
