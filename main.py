@@ -25,8 +25,8 @@ client = AsyncAzureOpenAI(
 # Mensaje del sistema y rutas de imágenes predefinidas
 SYSTEM_MESSAGE = open(file="system.txt", encoding="utf8").read().strip()
 PREDEFINED_IMAGE_PATHS = [
-    "ImagenesEntrenamiento\organizado.jpg",
-    "ImagenesEntrenamiento\desorganizado.jpg", 
+    "ImagenesEntrenamiento/organizado.jpg",
+    "ImagenesEntrenamiento/desorganizado.jpg", 
 ]
 
 
