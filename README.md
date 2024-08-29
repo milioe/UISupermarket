@@ -1,0 +1,2 @@
+# uidetect
+# UISupermarket
