@@ -20,12 +20,16 @@ class ImageClassificator:
         )
 
         # Rutas predefinidas para las imágenes de ejemplo
-        self.desorganizado_path = r'\UISupermarket\ImagenesEntrenamiento\desorganizado.jpg'
-        self.organizado_path = r'\UISupermarket\ImagenesEntrenamiento\organizado.jpg'
-        self.organizado_2_path = r'\UISupermarket\ImagenesEntrenamiento\organizado.jpg'
+        self.desorganizado_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'desorganizado.jpg')
+        self.organizado_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'organizado.jpg')
+        self.organizado_2_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'organizado.jpg')
 
     def local_image_to_data_url(self, image_path):
         """Codifica una imagen local en formato de data URL."""
+        # Verificar si el archivo existe
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"No se encontró el archivo: {image_path}")
+
         mime_type, _ = guess_type(image_path)
         if mime_type is None:
             mime_type = 'application/octet-stream'
@@ -50,7 +54,7 @@ class ImageClassificator:
              Tipo de clasificación:
              * Mal organizado
              * Medianamente organizado
-             * Organziado
+             * Organizado
              """ },
             {
                 "role": "user",
@@ -103,6 +107,7 @@ class ImageClassificator:
 
         # Devolver solo el contenido de la respuesta
         return response.choices[0].message.content
+
 
 # Ejemplo de uso
 # clasificador = ImageClassificator()
