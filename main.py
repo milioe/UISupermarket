@@ -5,7 +5,7 @@ from tempfile import NamedTemporaryFile
 from Clasificador import ImageClassificator  # Importar la clase ImageClassificator
 
 # Configurar Streamlit para que se muestre en modo "wide"
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Detector de pasillos GPT", layout="wide")
 
 # Instanciar el clasificador de imágenes
 clasificador = ImageClassificator()
