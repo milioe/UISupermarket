@@ -20,9 +20,9 @@ class ImageClassificator:
         )
 
         # Rutas predefinidas para las imágenes de ejemplo
-        self.desorganizado_path = r'C:\Users\EmilioSandovalPalomi\OneDrive - Mobiik\Documents\Oxxo\UISupermarket\ImagenesEntrenamiento\desorganizado.jpg'
-        self.organizado_path = r'C:\Users\EmilioSandovalPalomi\OneDrive - Mobiik\Documents\Oxxo\UISupermarket\ImagenesEntrenamiento\organizado.jpg'
-        self.organizado_2_path = r'C:\Users\EmilioSandovalPalomi\OneDrive - Mobiik\Documents\Oxxo\UISupermarket\ImagenesEntrenamiento\organizado.jpg'
+        self.desorganizado_path = r'ImagenesEntrenamiento\desorganizado.jpg'
+        self.organizado_path = r'ImagenesEntrenamiento\organizado.jpg'
+        self.organizado_2_path = r'ImagenesEntrenamiento\organizado.jpg'
 
     def local_image_to_data_url(self, image_path):
         """Codifica una imagen local en formato de data URL."""
@@ -106,5 +106,5 @@ class ImageClassificator:
 
 # Ejemplo de uso
 # clasificador = ImageClassificator()
-# resultado = clasificador.clasificar_pasillo(imagen_evaluar_path=r'C:\Users\EmilioSandovalPalomi\OneDrive - Mobiik\Documents\Oxxo\UISupermarket\ImagenesPreCargadas\71913150_ZAsw8uWgddbYuzBYMNkI9xFGaOqy08W6h4J_3uuI3ZA.jpg')
+# resultado = clasificador.clasificar_pasillo(imagen_evaluar_path=r'ImagenesPreCargadas\71913150_ZAsw8uWgddbYuzBYMNkI9xFGaOqy08W6h4J_3uuI3ZA.jpg')
 # print(resultado)
