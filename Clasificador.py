@@ -20,9 +20,9 @@ class ImageClassificator:
         )
 
         # Rutas predefinidas para las imágenes de ejemplo
-        self.desorganizado_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'desorganizado.jpg')
-        self.organizado_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'organizado.jpg')
-        self.organizado_2_path = os.path.join('UISupermarket', 'ImagenesEntrenamiento', 'organizado.jpg')
+        self.desorganizado_path = os.path.join('ImagenesEntrenamiento', 'desorganizado.jpg')
+        self.organizado_path = os.path.join('ImagenesEntrenamiento', 'organizado.jpg')
+        self.organizado_2_path = os.path.join('ImagenesEntrenamiento', 'organizado.jpg')
 
     def local_image_to_data_url(self, image_path):
         """Codifica una imagen local en formato de data URL."""
