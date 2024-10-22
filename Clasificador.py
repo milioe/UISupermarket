@@ -12,6 +12,16 @@ class ImageClassificator:
         self.deployment_name = st.secrets["AZURE_OAI_DEPLOYMENT"]
         self.api_version = "2024-02-15-preview"
 
+        # Rutas predefinidas para las imágenes de ejemplo
+        self.desorganizado_path = os.path.join('ImagenesEntrenamiento', 'desorganizado.jpg')
+        self.organizado_path = os.path.join('ImagenesEntrenamiento', 'organizado.jpg')
+        self.organizado_2_path = os.path.join('ImagenesEntrenamiento', 'organizado.jpg')
+
+        # Verificar que los archivos existan
+        self._check_file_exists(self.desorganizado_path)
+        self._check_file_exists(self.organizado_path)
+        self._check_file_exists(self.organizado_2_path)
+
         # Inicializar el cliente de Azure OpenAI
         self.client = AzureOpenAI(
             api_key=self.api_key,
@@ -19,10 +29,10 @@ class ImageClassificator:
             base_url=f"{self.api_base}/openai/deployments/{self.deployment_name}"
         )
 
-        # Rutas predefinidas para las imágenes de ejemplo
-        self.desorganizado_path = r'ImagenesEntrenamiento\desorganizado.jpg'
-        self.organizado_path = r'ImagenesEntrenamiento\organizado.jpg'
-        self.organizado_2_path = r'ImagenesEntrenamiento\organizado.jpg'
+    def _check_file_exists(self, file_path):
+        """Verifica si el archivo existe y lanza una excepción si no es así."""
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"No se encontró el archivo: {file_path}")
 
     def local_image_to_data_url(self, image_path):
         """Codifica una imagen local en formato de data URL."""
@@ -50,7 +60,7 @@ class ImageClassificator:
              Tipo de clasificación:
              * Mal organizado
              * Medianamente organizado
-             * Organziado
+             * Organizado
              """ },
             {
                 "role": "user",
@@ -104,7 +114,8 @@ class ImageClassificator:
         # Devolver solo el contenido de la respuesta
         return response.choices[0].message.content
 
+
 # Ejemplo de uso
-# clasificador = ImageClassificator()
-# resultado = clasificador.clasificar_pasillo(imagen_evaluar_path=r'ImagenesPreCargadas\71913150_ZAsw8uWgddbYuzBYMNkI9xFGaOqy08W6h4J_3uuI3ZA.jpg')
-# print(resultado)
+clasificador = ImageClassificator()
+resultado = clasificador.clasificar_pasillo(imagen_evaluar_path=r'ImagenesPreCargadas\71913150_ZAsw8uWgddbYuzBYMNkI9xFGaOqy08W6h4J_3uuI3ZA.jpg')
+print(resultado)
