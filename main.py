@@ -1,74 +1,17 @@
 import os
 import streamlit as st
 from PIL import Image, UnidentifiedImageError
-from io import BytesIO
-from openai import AsyncAzureOpenAI
-import asyncio
-import time
+from tempfile import NamedTemporaryFile
+from Clasificador import ImageClassificator  # Importar la clase ImageClassificator
 
 # Configurar Streamlit para que se muestre en modo "wide"
 st.set_page_config(layout="wide")
 
-# Configuración de Azure OpenAI usando secretos de Streamlit
-azure_oai_endpoint = st.secrets["AZURE_OAI_ENDPOINT"]
-azure_oai_key = st.secrets["AZURE_OAI_KEY"]
-azure_oai_deployment = st.secrets["AZURE_OAI_DEPLOYMENT"]
-api_version = "2024-02-15-preview"
-
-# Crear una instancia del cliente de Azure OpenAI
-client = AsyncAzureOpenAI(
-    azure_endpoint=azure_oai_endpoint, 
-    api_key=azure_oai_key,  
-    api_version=api_version
-)
-
-# Mensaje del sistema y rutas de imágenes predefinidas
-SYSTEM_MESSAGE = open(file="system.txt", encoding="utf8").read().strip()
-PREDEFINED_IMAGE_PATHS = [
-    "ImagenesEntrenamiento/organizado.jpg",
-    "ImagenesEntrenamiento/organizado2.jpg",
-    "ImagenesEntrenamiento/desorganizado.jpg", 
-]
-
-
-# Directorio de imágenes pre-cargadas
-PRELOADED_IMAGES_DIR = r"ImagenesPreCargadas"
-
-# Función para procesar imágenes locales
-def process_local_image(image_path: str) -> str:
-    try:
-        with Image.open(image_path) as img:
-            buffered = BytesIO()
-            img.save(buffered, format="JPEG")
-        return f"Image processed from path: {image_path}"
-    except UnidentifiedImageError:
-        raise ValueError("No se pudo identificar la imagen en el path proporcionado.")
-
-# Función para procesar la imagen subida por el usuario
-def process_uploaded_image(image_file) -> str:
-    try:
-        with Image.open(image_file) as img:
-            buffered = BytesIO()
-            img.save(buffered, format="JPEG")
-        return f"User uploaded image processed: {image_file.name}"
-    except UnidentifiedImageError:
-        raise ValueError("No se pudo identificar la imagen subida.")
-
-# Función asíncrona para llamar al modelo de Azure OpenAI
-async def call_azure_openai(client, messages):
-    try:
-        response = await client.chat.completions.create(
-            model=azure_oai_deployment,
-            messages=messages,
-            temperature=0,
-            max_tokens=800
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        raise RuntimeError(f"Error al llamar al modelo de Azure OpenAI: {str(e)}")
+# Instanciar el clasificador de imágenes
+clasificador = ImageClassificator()
 
 # Interfaz de Streamlit
-st.title("Detección de limpieza con GPT")
+st.title("Detección de pasillos con GPT")
 
 # Sidebar para drag and drop y selección de imágenes pre-cargadas
 with st.sidebar:
@@ -78,6 +21,7 @@ with st.sidebar:
     st.write("**... o selecciona una imagen pre-cargada:**")
     
     # Listar imágenes pre-cargadas en el directorio
+    PRELOADED_IMAGES_DIR = r"ImagenesPreCargadas"
     preloaded_images = os.listdir(PRELOADED_IMAGES_DIR)
     selected_preloaded_image = None
     
@@ -92,39 +36,34 @@ col1, col2 = st.columns(2)
 
 if uploaded_file or selected_preloaded_image:
     try:
+        # Determinar la imagen que se va a procesar
+        image_path = None
+        if uploaded_file:
+            # Si se subió un archivo, guardarlo temporalmente
+            with NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+                temp_file.write(uploaded_file.read())
+                image_path = temp_file.name
+        elif selected_preloaded_image:
+            # Si se seleccionó una imagen precargada
+            image_path = selected_preloaded_image
+
         with col1:
             # Mostrar la imagen seleccionada o subida
-            if uploaded_file:
-                image = Image.open(uploaded_file)
-                st.image(image, caption="Imagen Analizada", use_column_width=True)
-            elif selected_preloaded_image:
-                image = Image.open(selected_preloaded_image)
-                st.image(image, caption="Imagen Pre-cargada", use_column_width=True)
+            image = Image.open(image_path)
+            st.image(image, caption="Imagen Analizada", use_column_width=True)
 
         with col2:
-            # Procesar imágenes predefinidas
-            predefined_image_contexts = [process_local_image(image_path) for image_path in PREDEFINED_IMAGE_PATHS]
-            
-            # Procesar la imagen seleccionada o subida
-            if uploaded_file:
-                user_image_context = process_uploaded_image(uploaded_file)
-            elif selected_preloaded_image:
-                user_image_context = process_local_image(selected_preloaded_image)
-            
-            prompt = f"{SYSTEM_MESSAGE}\n\n{predefined_image_contexts}"
-            
-            messages = [
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": user_image_context},
-            ]
-            
-            # Agregar un spinner mientras se genera la respuesta
-            with st.spinner("Generando respuesta..."):
-                # Llamar al modelo de Azure OpenAI y obtener la respuesta generada
-                generated_text = asyncio.run(call_azure_openai(client, messages))
+            # Llamar a la función de clasificación de la clase ImageClassificator
+            with st.spinner("Generando predicción..."):
+                resultado = clasificador.clasificar_pasillo(image_path)
             
             # Mostrar la respuesta
-            st.write(generated_text)
+            st.write("**Resultado de la clasificación:**")
+            st.write(resultado)
 
-    except (ValueError, RuntimeError) as e:
+    except (UnidentifiedImageError, ValueError, RuntimeError) as e:
         st.toast(f"🚨 No se ha podido procesar la imagen: {str(e)}")
+    finally:
+        # Eliminar el archivo temporal si se creó
+        if uploaded_file and image_path:
+            os.remove(image_path)
