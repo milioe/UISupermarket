@@ -85,13 +85,13 @@ class ImageClassificator:
                     
                     El formato será el siguiente:
 
-                    Decisión: (Puedes devolver Pasillo organizado / Pasillo desorganizado)
+                    Decisión: (Puedes devolver Pasillo organizado / Pasillo desorganizado / Pasillo medianamente organizado)
                     
                     Descripción: (detalladamente, qué ves en la imagen)
 
                     Justificación: (Aquí pones la justificación en un párrafo o en lista, como creas conveniente.)
 
-                    Recomendaciones: (Una breve recomendación de qué mejorar para que esté organizado, solo en caso de que esté desorganizado)
+                    Recomendaciones: (Una breve recomendación de qué mejorar para que esté organizado, solo en caso de que esté desorganizado o medianamente organizado)
                     """ },
                     { "type": "image_url", "image_url": { "url": imagen_evaluar_data_url } }
                 ]
